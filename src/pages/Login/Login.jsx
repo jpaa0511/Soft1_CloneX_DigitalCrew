@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../auth/Contexts/UserContext";
 import {
   GlobalStyle,
@@ -36,9 +36,11 @@ const Login = () => {
     email: "",
     password: "",
     displayName: "",
+    profileName: "",
   });
+  const { displayName, email, password, profileName } = formState;
 
-  const { displayName, email, password } = formState;
+  const [passwordError, setPasswordError] = useState("");
 
   const onInputChangeLogin = (event) => {
     const { name, value } = event.target;
@@ -52,6 +54,9 @@ const Login = () => {
     event.preventDefault();
     const isValidLogin = await logInUser(email, password);
     if (isValidLogin) {
+      console.log("LLego a la validacion");
+      localStorage.setItem("profileName", profileName);
+      
       navigate("/main", { replace: true });
     }
   };
@@ -62,6 +67,17 @@ const Login = () => {
       ...formState,
       [name]: value,
     });
+
+    if (name === "password") {
+      const passwordRegex = /^(?=.*[!@#$%^&*])(?=.{8,})/;
+      if (!passwordRegex.test(value)) {
+        setPasswordError(
+          "La contraseña debe tener al menos 8 caracteres y un carácter especial."
+        );
+      } else {
+        setPasswordError("");
+      }
+    }
   };
 
   const onRegister = async (event) => {
@@ -73,20 +89,17 @@ const Login = () => {
   };
 
   const [isOpenModalRegister, setOpenModalRegister] = useState(false);
-
   const openModalRegister = () => {
     setOpenModalRegister(!isOpenModalRegister);
   };
 
   const [isOpenModalLogin, setOpenModalLogin] = useState(false);
-
   const openModalLogin = () => {
     setOpenModalLogin(!isOpenModalLogin);
   };
 
   const onLoginWithGoogle = async (event) => {
     event.preventDefault();
-
     const isValidLogin = await logInWithGoogle();
     if (isValidLogin) {
       navigate("/main", { replace: true });
@@ -95,7 +108,6 @@ const Login = () => {
 
   const onLoginWithFacebook = async (event) => {
     event.preventDefault();
-
     const isValidLogin = await logInWithFacebook();
     if (isValidLogin) {
       navigate("/main", { replace: true });
@@ -114,12 +126,12 @@ const Login = () => {
           <h3>Únete hoy</h3>
           <br />
           <GoogleButton onClick={onLoginWithGoogle}>
-            <img src="https://img.icons8.com/?size=512&id=17949&format=png" />{" "}
+            <img src="https://img.icons8.com/?size=512&id=17949&format=png" alt="Google Icon" />
             Ingresar con Google
           </GoogleButton>
           <br />
           <FacebookButton onClick={onLoginWithFacebook}>
-            <img src="https://images.vexels.com/content/223136/preview/facebook-icon-social-media-8dfafe.png" />
+            <img src="https://images.vexels.com/content/223136/preview/facebook-icon-social-media-8dfafe.png" alt="Facebook Icon" />
             Ingresar con Facebook
           </FacebookButton>
           <br />
@@ -191,6 +203,17 @@ const Login = () => {
                   />
                 </InputRegister>
                 <InputRegister>
+                    <label htmlFor="profileName">Profile name</label>
+                    <input
+                      type="text"
+                      name="profileName"
+                      value={profileName}
+                      onChange={onInputChangeRegister}
+                      placeholder="Enter your Profile Name"
+                      required
+                    />
+                  </InputRegister>
+                <InputRegister>
                   <label htmlFor="email">Email</label>
                   <input
                     type="email"
@@ -211,6 +234,9 @@ const Login = () => {
                     placeholder="Enter your password"
                     required
                   />
+                  {passwordError && (
+                    <p style={{ color: "red" }}>{passwordError}</p>
+                  )}
                 </InputRegister>
                 <RegisterButton type="submit">CREAR CUENTA</RegisterButton>
               </Form>
@@ -221,4 +247,5 @@ const Login = () => {
     </>
   );
 };
+
 export default Login;
