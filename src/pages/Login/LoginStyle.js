@@ -129,21 +129,10 @@ export const RegisterButton = styled.button`
   }
 `;
 
-export const CloseButton = styled.button`
-    top: 10px;
-    right: 10px;
-    width: 30px;
-    height: 30px;
-    border; none;
-    background: none;
-    cursor: pointer;
-    transition: 0.3s ease all;
-    border-radius: 5px;
-    color: #fff;
-
-    &:hover {
-        background: #ccc;
-    }
+export const CloseIconContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  cursor: pointer;
 `;
 
 export const InputRegister = styled.div`
