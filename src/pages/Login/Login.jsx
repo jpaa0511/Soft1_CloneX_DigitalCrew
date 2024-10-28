@@ -5,9 +5,13 @@ import {
   SidebarLeft,
   MainContent,
   Title,
+ 
+  RegisterButton,
+  CloseButton,
+
+ 
   GoogleButton,
   FacebookButton,
-  RegisterButton,
 } from "./LoginStyle";
 import XIcon from "@mui/icons-material/X";
 import LoginForm from "./LoginFrom";
@@ -70,6 +74,7 @@ const Login = () => {
         </MainContent>
         {isOpenModalLogin && (
           <LoginModal>
+            
             <LoginForm
               email={email}
               password={password}

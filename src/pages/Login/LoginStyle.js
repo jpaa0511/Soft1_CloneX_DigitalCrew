@@ -216,3 +216,20 @@ export const FacebookButton = styled.button`
     margin-right: 30px;
   }
 `;
+
+export const CloseButton = styled.button`
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border; none;
+    background: none;
+    cursor: pointer;
+    transition: 0.3s ease all;
+    border-radius: 5px;
+    color: #fff;
+
+    &:hover {
+        background: #ccc;
+    }
+`;
