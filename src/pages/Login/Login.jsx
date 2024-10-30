@@ -5,11 +5,7 @@ import {
   SidebarLeft,
   MainContent,
   Title,
- 
   RegisterButton,
-  CloseButton,
-
- 
   GoogleButton,
   FacebookButton,
 } from "./LoginStyle";
@@ -81,6 +77,7 @@ const Login = () => {
               onInputChange={onInputChange}
               onLogin={onLogin}
               errorMessage={errorMessage}
+              toggleModalLogin={toggleModalLogin}
             />
           </LoginModal>
         )}
@@ -93,6 +90,7 @@ const Login = () => {
               onInputChange={onInputChange}
               onRegister={onRegister}
               toggleModalRegister={toggleModalRegister}
+              errorMessage={errorMessage}
             />
           </RegisterModal>
         )}

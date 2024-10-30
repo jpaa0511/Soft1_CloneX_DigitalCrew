@@ -1,5 +1,6 @@
 import React from "react";
-import { Form, Input, LoginButton } from "./LoginStyle";
+import { Form, Input, LoginButton, CloseIconContainer, } from "./LoginStyle";
+import CloseIcon from "@mui/icons-material/Close";
 
 const LoginForm = ({
   email,
@@ -7,9 +8,13 @@ const LoginForm = ({
   onInputChange,
   onLogin,
   errorMessage,
+  toggleModalLogin,
 }) => (
   <form onSubmit={onLogin}>
     <Form>
+    <CloseIconContainer onClick={toggleModalLogin}>
+        <CloseIcon />
+      </CloseIconContainer>
       <Input>
         <label htmlFor="email">Email</label>
         <input

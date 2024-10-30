@@ -13,6 +13,7 @@ const RegisterForm = ({
   password,
   onInputChange,
   onRegister,
+  errorMessage,
   toggleModalRegister,
 }) => (
   <form onSubmit={onRegister}>
@@ -55,6 +56,9 @@ const RegisterForm = ({
       </InputRegister>
       <RegisterButton type="submit">CREAR CUENTA</RegisterButton>
     </Form>
+    {errorMessage && (
+      <p style={{ color: "red", marginTop: "10px" }}>{errorMessage}</p>
+    )}
   </form>
 );
 
