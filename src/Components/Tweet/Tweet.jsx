@@ -21,7 +21,7 @@ import { UserContext } from "../../auth/Contexts/UserContext";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
-export const Tweet = (username) => {
+export const Tweet = () => {
   const [posts, setPosts] = useState([]);
   const { user } = useContext(UserContext);
   const [showMenu, setShowMenu] = useState(null);
@@ -67,7 +67,7 @@ export const Tweet = (username) => {
     <div>
       {posts.map((post) => (
         <TweetContainer key={post.id}>
-          <Avatar src={post.avatar || user?.photoURL} alt="User Avatar" />
+          <Avatar src={user?.photoURL} alt="User Avatar" />
           <TweetContent>
             <UserInfo>
               <strong>{user?.displayName}</strong>{" "}

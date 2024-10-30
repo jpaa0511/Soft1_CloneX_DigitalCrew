@@ -5,14 +5,33 @@ export const Container = styled.div`
   top: 0;
   left: 0;
   height: 100vh;
-  width: 275px; /* Ancho ligeramente mayor para darle más espacio */
+  width: 275px;
   display: flex;
   flex-direction: column;
   padding: 10px;
-  border-right: 1px solid #2f3336; /* Borde oscuro */
-  background-color: #000; /* Fondo oscuro */
+  border-right: 1px solid #2f3336;
+  background-color: #000;
   box-sizing: border-box;
   justify-content: space-between;
+`;
+
+export const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 14px 10px;
+  cursor: pointer;
+  color: white; /* Color azul */
+  
+  .MuiSvgIcon-root {
+    width: 30px;
+    height: 30px;
+    color: white; /* Asegura el color azul */
+  }
+  
+  &:hover {
+    background-color: #192734;
+    transition: background-color 200ms ease-out;
+  }
 `;
 
 export const SidebarIcon = styled.div`
