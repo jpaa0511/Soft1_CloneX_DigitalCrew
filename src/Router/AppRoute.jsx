@@ -35,7 +35,7 @@ const AppRouter = () => {
         path="/profile"
         element={
           <PrivateRoute>
-            <Xprofile/>
+            <Xprofile />
           </PrivateRoute>
         }
       />

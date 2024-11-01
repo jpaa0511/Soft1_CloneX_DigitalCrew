@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from "react";
 import { Calendar } from "lucide-react";
 import { Sidebar } from "../../Components/Sidebar/index";
 import { Widgets } from "../../Components/Widgets";
-import "bootstrap/dist/css/bootstrap.min.css";
 import GlobalStyles from "../../styles/StylesGlobal";
 import { UserContext } from "../../auth/Contexts/UserContext";
 import {
@@ -11,20 +10,13 @@ import {
   TabsContainer,
   ProfileHeaderContainer,
   VerifiedBadge,
-  HeaderModal,
-  CloseButton,
-  TitleRegister,
-  Form,
-  Input,
-  Avatar,
-  File,
 } from "./styles";
 import User from "../../Components/Img/user1.png";
 import { Container, SidebarContainer, WidgetsContainer } from "../Home/styles";
 import { Tweet } from "../../Components/Tweet/Tweet";
-import { ProfileModal } from "../../Components/Modal/ModalProfile";
+import { ProfileModal } from "./ProfileModal";
 
-const Xprofile = () => {
+const XProfile = () => {
   const { user, errorMessage } = useContext(UserContext);
   const [profile, setProfile] = useState({
     coverPhoto: "",
@@ -51,7 +43,7 @@ const Xprofile = () => {
   }, []);
 
   const [isOpenModalProfile, setOpenModalProfile] = useState(false);
-  const openModalProfile = () => {
+  const handleModalToggle = () => {
     setOpenModalProfile(!isOpenModalProfile);
   };
 
@@ -76,67 +68,18 @@ const Xprofile = () => {
                 className="profile-photo"
               />
             </div>
-            <ProfileButton onClick={openModalProfile}>
+            <ProfileButton onClick={handleModalToggle}>
               Edit profile
             </ProfileButton>
-            {isOpenModalProfile && (
-              <ProfileModal>
-                <HeaderModal>
-                  <TitleRegister>Edit Profile</TitleRegister>
-                  <CloseButton onClick={openModalProfile}>X</CloseButton>
-                </HeaderModal>
-                <form>
-                  <Form>
-                    <Avatar src={user?.photoURL} alt="" />
-                    <File
-                      type="file"
-                      className="primary"
-                      // onChange={handleAvatarChange}
-                      accept="image/*"
-                    />
-                    <Input>
-                      <label htmlFor="name">Name</label>
-                      <input
-                        type="text"
-                        name="name"
-                        // value={email}
-                        // onChange={onInputChangeLogin}
-                        placeholder="Enter your Name"
-                        required
-                      />
-                    </Input>
-                    <Input>
-                      <label htmlFor="userName">User Name</label>
-                      <input
-                        type="text"
-                        name="userName"
-                        // value={password}
-                        // onChange={onInputChangeLogin}
-                        placeholder="Enter your user name"
-                        required
-                      />
-                    </Input>
-                    <Input>
-                      <label htmlFor="bio">Bio</label>
-                      <input
-                        type="text"
-                        name="bio"
-                        // value={password}
-                        // onChange={onInputChangeLogin}
-                        placeholder="Enter your bio"
-                        required
-                      />
-                    </Input>
-                    {/* <LoginButton type="submit">Login</LoginButton> */}
-                  </Form>
-                  {errorMessage && (
-                    <p style={{ color: "red", marginTop: "10px" }}>
-                      {errorMessage}
-                    </p>
-                  )}
-                </form>
-              </ProfileModal>
-            )}
+
+            {/* Modal Component */}
+            <ProfileModal
+              isOpen={isOpenModalProfile}
+              onClose={handleModalToggle}
+              user={user}
+              errorMessage={errorMessage}
+            />
+
             <div className="profile-info">
               <h2 className="profile-name">
                 {user?.displayName}
@@ -203,4 +146,4 @@ const Xprofile = () => {
   );
 };
 
-export default Xprofile;
+export default XProfile;
