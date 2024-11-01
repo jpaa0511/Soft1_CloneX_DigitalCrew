@@ -112,13 +112,12 @@ export const Container = styled.main`
   padding: 20px;
 
   border-right: 1px solid rgba(255, 255, 255, 0.1);
-  max-width: 740px; /* Para limitar el ancho máximo del timeline */
+  max-width: 870px; /* Para limitar el ancho máximo del timeline */
 `;
 
 export const SidebarContainer = styled.aside`
   flex-basis: 270px; /* Ancho fijo para el sidebar */
   padding: 10px;
-  
 `;
 
 export const WidgetsContainer = styled.aside`

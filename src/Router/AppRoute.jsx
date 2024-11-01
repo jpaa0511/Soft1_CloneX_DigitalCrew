@@ -4,8 +4,11 @@ import Login from "../pages/login/login";
 import MainPage from "../pages/home/MainPage";
 import Register from "../pages/Record/record";
 import Xprofile from "../pages/Profile/Profile";
+import Follower from "../pages/Profile/Followers";
+import Following from "../pages/Profile/Following";
 import { PrivateRoute } from "./PrivateRoute";
 import { PublicRoute } from "./PublicRoute";
+import Explore from "../pages/Explore/Explore";
 
 const AppRouter = () => {
   return (
@@ -36,6 +39,42 @@ const AppRouter = () => {
         element={
           <PrivateRoute>
             <Xprofile />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/profile/:userId"
+        element={
+          <PrivateRoute>
+            <Xprofile />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/profile/:userId/followers"
+        element={
+          <PrivateRoute>
+            <Follower />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/profile/:userId/following"
+        element={
+          <PrivateRoute>
+            <Following />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/explore"
+        element={
+          <PrivateRoute>
+            <Explore />
           </PrivateRoute>
         }
       />

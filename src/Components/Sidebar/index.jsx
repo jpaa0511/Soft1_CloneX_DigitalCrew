@@ -41,7 +41,7 @@ export const Sidebar = () => {
         <XIcon />
       </LogoContainer>
       <IconsOptions Icon={HomeIcon} text="Home" to='/main'/>
-      <IconsOptions Icon={SearchIcon} text="Explore" />
+      <IconsOptions Icon={SearchIcon} text="Explore" to="/explore"/>
       <IconsOptions Icon={NotificationsActiveIcon} text="Notifications" />
       <IconsOptions Icon={EmailIcon} text="Messages" />
       <IconsOptions Icon={PeopleIcon} text="Communities" />
