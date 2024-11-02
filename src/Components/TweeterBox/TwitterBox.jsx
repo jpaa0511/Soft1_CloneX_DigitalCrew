@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { TwitterBox, Avatar, Div, Form, DivIcon, File, DivURL } from "./styles";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import GifIcon from "@mui/icons-material/Gif";
@@ -8,15 +8,16 @@ import { Button } from "@mui/material";
 import { uploadFile } from "../../Connecting_to_Firebase/services/UploadService";
 import { db } from "../../Connecting_to_Firebase/firebase";
 import { collection, addDoc } from "firebase/firestore";
-import User from "../../Components/Img/user1.png";
+import { UserContext } from "../../auth/Contexts/UserContext";
 
 export const TwitterBoxs = () => {
   confirm;
-  const [user, setUser] = useState("");
+  const [User, setUser] = useState("");
   const [tweeMsg, setTweeMsg] = useState("");
   const [avatar, setAvatar] = useState("");
   const [post, setPost] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const savedAvatar = localStorage.getItem("userAvatar");
@@ -27,16 +28,16 @@ export const TwitterBoxs = () => {
 
   const sendTweet = async (e) => {
     e.preventDefault();
-    if (user.length < 1) {
+    if (User.length < 1) {
       alert("Debe escribir un nombre de usuario.");
     }
-    if (tweeMsg.length < 5 || tweeMsg.length > 300) {
+    if (tweeMsg.length < 5 || tweeMsg.length > 280) {
       alert("El tweet debe tener entre 5 y 300 caracteres.");
       return;
     }
     try {
       await addDoc(collection(db, "posts"), {
-        username: user,
+        username: User,
         veridield: true,
         text: tweeMsg,
         timestamp: Date.now(),
@@ -88,13 +89,7 @@ export const TwitterBoxs = () => {
     <TwitterBox>
       <Form>
         <Div>
-          {isLoading ? (
-            <p>Cargando...</p>
-          ) : avatar ? (
-            <Avatar src={avatar} alt="" />
-          ) : (
-            <Avatar src={User} alt="" />
-          )}
+          <Avatar src={user?.photoURL} alt="" />
           <File
             type="file"
             className="primary"
@@ -114,7 +109,7 @@ export const TwitterBoxs = () => {
             <input
               type="text"
               placeholder="Usuario"
-              value={user}
+              value={User}
               onChange={(e) => setUser(e.target.value)}
             />
           </div>

@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Calendar } from "lucide-react";
-import { Sidebar } from "../../Components/Sidebar/index";
+import { Sidebar } from "../../Components/Sidebar";
 import { Widgets } from "../../Components/Widgets";
+import "bootstrap/dist/css/bootstrap.min.css";
 import GlobalStyles from "../../styles/StylesGlobal";
 import { UserContext } from "../../auth/Contexts/UserContext";
 import {
@@ -10,42 +11,71 @@ import {
   TabsContainer,
   ProfileHeaderContainer,
   VerifiedBadge,
+  Stats,
+  StatItem,
 } from "./styles";
 import User from "../../Components/Img/user1.png";
 import { Container, SidebarContainer, WidgetsContainer } from "../Home/styles";
 import { Tweet } from "../../Components/Tweet/Tweet";
 import { ProfileModal } from "./ProfileModal";
+import { useParams } from "react-router-dom";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../Connecting_to_Firebase/firebase";
 
 const XProfile = () => {
+  const { userId } = useParams();
   const { user, errorMessage } = useContext(UserContext);
-  const [profile, setProfile] = useState({
-    coverPhoto: "",
-    profilePhoto: "",
-    name: "",
-    username: "JUAN_K_017",
-    followers: 0,
-    following: 0,
-  });
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const fetchProfileData = async () => {
-      setProfile({
-        coverPhoto: "/path/to/cover.jpg",
-        profilePhoto: "",
-        name: "",
-        username: "Profile Name",
-        followers: 0,
-        following: 0,
-      });
+    const fetchUserData = async () => {
+      if (!userId) {
+        setUserData({
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+          userName: user.userName || "Usuario",
+          following: user.following || 0,
+          followers: user.followers || 0,
+          bannerURL: user.bannerURL || "https://example.com/default-cover.jpg",
+          joinDate: user.joinDate || "N/A",
+        });
+      } else {
+        try {
+          const userDoc = doc(db, "perfil", userId);
+          const userSnapshot = await getDoc(userDoc);
+
+          if (userSnapshot.exists()) {
+            const userData = userSnapshot.data();
+            setUserData({
+              displayName: userData.displayName,
+              photoURL: userData.photoURL || User,
+              userName: userData.userName,
+              following: userData.following || 0,
+              followers: userData.followers || 0,
+              bannerURL:
+                userData.bannerURL || "https://example.com/default-cover.jpg",
+              joinDate: userData.joinDate || "N/A",
+            });
+          } else {
+            console.error("User does not exist");
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
     };
 
-    fetchProfileData();
-  }, []);
+    fetchUserData();
+  }, [userId, user]);
 
   const [isOpenModalProfile, setOpenModalProfile] = useState(false);
   const handleModalToggle = () => {
     setOpenModalProfile(!isOpenModalProfile);
   };
+
+  if (!userData) {
+    return <h1>Loading...</h1>;
+  }
 
   return (
     <>
@@ -58,48 +88,50 @@ const XProfile = () => {
           <ProfileHeaderContainer>
             <div className="cover-photo-container">
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoF9f8Y4lwQeOnLijmMajma9CtCkOEs7MgSA&s"
+                src={userData.bannerURL}
                 alt="Cover"
                 className="cover-photo"
               />
               <img
-                src={user?.photoURL || User}
+                src={userData.photoURL}
                 alt="Profile"
                 className="profile-photo"
               />
             </div>
-            <ProfileButton onClick={handleModalToggle}>
-              Edit profile
-            </ProfileButton>
-
-            {/* Modal Component */}
+            {!userId ? (
+              <ProfileButton onClick={handleModalToggle}>
+                Edit profile
+              </ProfileButton>
+            ) : (
+              <ProfileButton>Follow</ProfileButton>
+            )}
             <ProfileModal
               isOpen={isOpenModalProfile}
               onClose={handleModalToggle}
               user={user}
               errorMessage={errorMessage}
-            />
-
+            />
             <div className="profile-info">
               <h2 className="profile-name">
-                {user?.displayName}
+                {userData.displayName}
                 <VerifiedBadge>Get verified</VerifiedBadge>
               </h2>
-              <p className="username">@{profile.username}</p>
+              <p className="userName">@{userData.userName}</p>
 
               <div className="join-date">
                 <Calendar size={16} />
-                <span>Joined December 2022</span>
+                <span>Joined {userData.joinDate}</span>
               </div>
-
-              <div className="stats">
-                <span>
-                  <strong>{profile.following}</strong> Following
-                </span>
-                <span>
-                  <strong>{profile.followers}</strong> Followers
-                </span>
-              </div>
+              <Stats>
+                <StatItem href={`/profile/${userId || user.uid}/following`}>
+                  <span className="number">{userData.following}</span>
+                  <span className="text">Following</span>
+                </StatItem>
+                <StatItem href={`/profile/${userId || user.uid}/followers`}>
+                  <span className="number">{userData.followers}</span>
+                  <span className="text">Followers</span>
+                </StatItem>
+              </Stats>
             </div>
           </ProfileHeaderContainer>
 
