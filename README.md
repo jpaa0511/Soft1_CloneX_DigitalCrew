@@ -34,6 +34,7 @@ Además, el proyecto cuenta con un backend también en JavaScript, con el propó
 4. Instala las dependencias necesarias:
    ```bash
    npm install
+   npm instal uuid
 5. Ejecuta el proyecto:
    ```bash
    npm run dev
