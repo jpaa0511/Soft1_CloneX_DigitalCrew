@@ -1,5 +1,4 @@
-// Sidebar.js
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   Container,
   LogoContainer,
@@ -18,14 +17,19 @@ import PeopleIcon from "@mui/icons-material/People";
 import PersonIcon from "@mui/icons-material/Person";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { IconsOptions } from "./IconsOptions";
-import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../auth/Contexts/UserContext";
+import { db } from "../../Connecting_to_Firebase/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 export const Sidebar = () => {
   const [showTooltip, setShowTooltip] = useState(false);
+  const [userName, setUserName] = useState("");  
+  const [avatar, setAvatar] = useState("");  
   const { user, logOutUser } = useContext(UserContext);
+  const [profileExists, setProfileExists] = useState(false); 
   const navigate = useNavigate();
-  
+
   const handleLogout = () => {
     logOutUser();
     navigate("/login", { replace: true });
@@ -34,6 +38,34 @@ export const Sidebar = () => {
   const toggleTooltip = () => {
     setShowTooltip((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (user?.uid) {
+      const fetchUserData = async () => {
+        try {
+          const docRef = doc(db, "perfil", user.uid); 
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            setUserName(userData.displayName); 
+            setAvatar(userData.photoURL); 
+            setProfileExists(true);  
+          } else {
+            setUserName(user.displayName || "Usuario"); 
+            setAvatar(user.photoURL || "default-avatar-url"); 
+            setProfileExists(false);
+          }
+        } catch (error) {
+          console.error("Error al obtener los datos del perfil:", error);
+        }
+      };
+
+      fetchUserData();
+    }
+  }, [user]);
+
+  const profilePath = profileExists ? `/profile/${user?.uid}` : "/profile";
 
   return (
     <Container>
@@ -45,15 +77,15 @@ export const Sidebar = () => {
       <IconsOptions Icon={NotificationsActiveIcon} text="Notifications" />
       <IconsOptions Icon={EmailIcon} text="Messages" />
       <IconsOptions Icon={PeopleIcon} text="Communities" />
-      <IconsOptions Icon={PersonIcon} text="Profile" to='/profile'/>
+      <IconsOptions Icon={PersonIcon} text="Profile" to={profilePath} />
       <IconsOptions Icon={MoreHorizIcon} text="More" />
 
       <Button>Post</Button>
 
       <UserContainer onClick={toggleTooltip}>
-        <Avatar src={user?.photoURL} alt="User Avatar" />
+        <Avatar src={avatar} alt="User Avatar" />
         <div>
-          <h4>{user?.displayName}</h4>
+          <h4>{userName}</h4> 
           <span>{user?.email}</span>
         </div>
         {showTooltip && (
@@ -65,3 +97,4 @@ export const Sidebar = () => {
     </Container>
   );
 };
+  

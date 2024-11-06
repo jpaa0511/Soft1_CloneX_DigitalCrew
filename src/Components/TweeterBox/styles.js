@@ -165,3 +165,20 @@ export const File = styled.input.attrs({ type: "file" })`
     width: 30px;
   }
 `;
+
+export const Alert = styled.div`
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4caf50; /* Verde para éxito */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  z-index: 1000;
+  display: ${({ show }) => (show ? "block" : "none")}; /* Ocultar cuando show es false */
+  transition: opacity 0.3s ease-in-out;
+  opacity: ${({ show }) => (show ? 1 : 0)};
+`;

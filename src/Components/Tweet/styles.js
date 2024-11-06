@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const TweetContainer = styled.div`
   display: flex;
@@ -8,7 +9,7 @@ export const TweetContainer = styled.div`
   background-color: #000;
   color: #d9d9d9;
   border-radius: 10px;
-  position: relative; /* Necesario para el menú */
+  position: relative;
   margin: 10px 0;
   transition: background-color 0.3s ease;
 
@@ -32,6 +33,7 @@ export const UserInfo = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 5px;
+  padding: 10px:
 
   strong {
     margin-right: 5px;
@@ -40,7 +42,19 @@ export const UserInfo = styled.div`
 
   span {
     font-size: 14px;
-    color: #8899a6; /* Color para el handle del usuario */
+    color: #8899a6;
+  }
+`;
+
+export const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+
+  &:hover {
+    color: #1da1f2;
   }
 `;
 
@@ -190,4 +204,19 @@ export const PostFooter = styled.div`
   }
 `;
 
-
+export const Alert = styled.div`
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  z-index: 1000;
+  display: ${({ show }) => (show ? "block" : "none")};
+  transition: opacity 0.3s ease-in-out;
+  opacity: ${({ show }) => (show ? 1 : 0)};
+`;

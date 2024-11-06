@@ -17,7 +17,7 @@ const MainPage = () => {
         </SidebarContainer>
         <Container>
           <TwitterBoxs />
-          <Tweet/>
+          <Tweet showAll={true}/>
         </Container>
         <WidgetsContainer>
           <Widgets />

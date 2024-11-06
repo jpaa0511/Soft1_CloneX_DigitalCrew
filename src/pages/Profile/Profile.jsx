@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Calendar } from "lucide-react";
 import { Sidebar } from "../../Components/Sidebar";
 import { Widgets } from "../../Components/Widgets";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -19,13 +18,19 @@ import { Container, SidebarContainer, WidgetsContainer } from "../Home/styles";
 import { Tweet } from "../../Components/Tweet/Tweet";
 import { ProfileModal } from "./ProfileModal";
 import { useParams } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { db } from "../../Connecting_to_Firebase/firebase";
 
 const XProfile = () => {
   const { userId } = useParams();
   const { user, errorMessage } = useContext(UserContext);
   const [userData, setUserData] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isOpenModalProfile, setOpenModalProfile] = useState(false);
+
+  const handleModalToggle = () => {
+    setOpenModalProfile(!isOpenModalProfile);
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -56,6 +61,7 @@ const XProfile = () => {
                 userData.bannerURL || "https://example.com/default-cover.jpg",
               joinDate: userData.joinDate || "N/A",
             });
+            setIsFollowing(userData.followers?.includes(user.uid) || false);
           } else {
             console.error("User does not exist");
           }
@@ -68,9 +74,50 @@ const XProfile = () => {
     fetchUserData();
   }, [userId, user]);
 
-  const [isOpenModalProfile, setOpenModalProfile] = useState(false);
-  const handleModalToggle = () => {
-    setOpenModalProfile(!isOpenModalProfile);
+  const followUser = async () => {
+    try {
+      const userDocRef = doc(db, "perfil", userId);
+      const loggedInUserDocRef = doc(db, "perfil", user.uid);
+
+      await updateDoc(userDocRef, {
+        followers: arrayUnion(user.uid),
+      });
+
+      await updateDoc(loggedInUserDocRef, {
+        following: arrayUnion(userId),
+      });
+
+      setUserData((prevData) => ({
+        ...prevData,
+        followers: [...(prevData.followers || []), user.uid],
+      }));
+      setIsFollowing(true);
+    } catch (error) {
+      console.error("Error following user:", error);
+    }
+  };
+
+  const unfollowUser = async () => {
+    try {
+      const userDocRef = doc(db, "perfil", userId);
+      const loggedInUserDocRef = doc(db, "perfil", user.uid);
+
+      await updateDoc(userDocRef, {
+        followers: arrayRemove(user.uid),
+      });
+
+      await updateDoc(loggedInUserDocRef, {
+        following: arrayRemove(userId),
+      });
+
+      setUserData((prevData) => ({
+        ...prevData,
+        followers: (prevData.followers || []).filter((id) => id !== user.uid),
+      }));
+      setIsFollowing(false);
+    } catch (error) {
+      console.error("Error unfollowing user:", error);
+    }
   };
 
   if (!userData) {
@@ -98,43 +145,41 @@ const XProfile = () => {
                 className="profile-photo"
               />
             </div>
-            {!userId ? (
+            {userId === user.uid ? (
               <ProfileButton onClick={handleModalToggle}>
                 Edit profile
               </ProfileButton>
             ) : (
-              <ProfileButton>Follow</ProfileButton>
+              isFollowing ? (
+                <ProfileButton onClick={unfollowUser}>Unfollow</ProfileButton>
+              ) : (
+                <ProfileButton onClick={followUser}>Follow</ProfileButton>
+              )
             )}
             <ProfileModal
               isOpen={isOpenModalProfile}
               onClose={handleModalToggle}
               user={user}
               errorMessage={errorMessage}
-            />
+            />
             <div className="profile-info">
               <h2 className="profile-name">
                 {userData.displayName}
                 <VerifiedBadge>Get verified</VerifiedBadge>
               </h2>
               <p className="userName">@{userData.userName}</p>
-
-              <div className="join-date">
-                <Calendar size={16} />
-                <span>Joined {userData.joinDate}</span>
-              </div>
               <Stats>
                 <StatItem href={`/profile/${userId || user.uid}/following`}>
-                  <span className="number">{userData.following}</span>
+                  <span className="number">{userData.following?.length || 0}</span>
                   <span className="text">Following</span>
                 </StatItem>
                 <StatItem href={`/profile/${userId || user.uid}/followers`}>
-                  <span className="number">{userData.followers}</span>
+                  <span className="number">{userData.followers?.length || 0}</span>
                   <span className="text">Followers</span>
                 </StatItem>
               </Stats>
             </div>
           </ProfileHeaderContainer>
-
           <TabsContainer>
             <li className="nav-item">
               <a className="nav-link active" href="#">
@@ -167,8 +212,7 @@ const XProfile = () => {
               </a>
             </li>
           </TabsContainer>
-
-          <Tweet />
+          <Tweet userId={userId} loggedInUserId={user.uid} limit={10} />
         </Container>
         <WidgetsContainer>
           <Widgets />

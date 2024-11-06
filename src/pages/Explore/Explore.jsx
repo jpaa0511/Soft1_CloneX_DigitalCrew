@@ -17,11 +17,11 @@ import { Container, SidebarContainer, WidgetsContainer } from "../../pages/Home/
 const Explore = () => {
 
   const userSuggestions = [
-    { name: "John", profilePic: "http://via.placeholder.com/40" },
-    { name: "Emily", profilePic: "http://via.placeholder.com/40" },
-    { name: "David", profilePic: "http://via.placeholder.com/40" },
-    { name: "Sarah", profilePic: "http://via.placeholder.com/40" },
-    { name: "Michael", profilePic: "http://via.placeholder.com/40" },
+    { name: "John", profilePic: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3HBG7VE4Vj7zQVcxw8rM-rgpLAUWVIpQw3w&s" },
+    { name: "Emily", profilePic: "https://laboratoriosniam.com/wp-content/uploads/2018/07/michael-dam-258165-unsplash_WEB2.jpg" },
+    { name: "David", profilePic: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqcVXIgWCvTbb55lDj91N_g2rd0F3rma21CA&s" },
+    { name: "Sarah", profilePic: "https://pymstatic.com/5844/conversions/personas-emocionales-wide_webp.webp" },
+    { name: "Michael", profilePic: "https://img.freepik.com/fotos-premium/foto-alguien-que-esta-pensando-algo_831338-1457.jpg?w=360" },
   ];
 
   return (

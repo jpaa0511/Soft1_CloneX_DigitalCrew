@@ -25,7 +25,13 @@ export const BackButtonContainer = styled.button`
   border: none;
   background: none;
   cursor: pointer;
-  margin-right: 20px; 
+  margin-right: 20px;
+  color: #1da1f2;
+  font-size: 18px;
+
+  &:hover {
+    color: #555;
+  }
 `;
 
 export const Username = styled.h2`
@@ -54,11 +60,10 @@ export const Tab = styled.button`
   background: none;
   border: none;
   font-size: 14px;
-  color: ${({ active }) => (active ? '#fff' : '#777')};
-  font-weight: ${({ active }) => (active ? 'bold' : 'normal')};
+  color: ${({ $active }) => ($active ? "#fff" : "#777")};
+  font-weight: ${({ $active }) => ($active ? "bold" : "normal")};
   text-align: center;
   position: relative;
-  transition: background-color 0.3s, color 0.3s;
 
   &:hover {
     background-color: #333;
@@ -66,33 +71,23 @@ export const Tab = styled.button`
   }
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
-    bottom: -2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: ${({ active }) => (active ? '30%' : '0')};
+    bottom: 0;
+    left: 0;
     height: 2px;
-    background-color: #1da1f2;
-    transition: width 0.3s;
+    width: 100%;
+    background-color: ${({ $active }) => ($active ? "#1da1f2" : "transparent")};
+    transition: background-color 0.3s ease;
   }
 `;
-
 
 export const Content = styled.div`
   margin-top: 10px;
 `;
 
-export const FollowerList = styled.div`
+export const FollowingList = styled.div`
   font-size: 14px;
-  border-bottom: 1px solid #333;
-`;
-
-export const FollowerItem = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 0;
 `;
 
 export const FollowingItem = styled.div`
@@ -100,58 +95,118 @@ export const FollowingItem = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 10px 0;
-  
+  border-top: 1px solid #333;
 `;
 
-export const FollowerInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-export const FollowerName = styled.h3`
-  font-size: 18px;
-  margin-bottom: 3px;
-`;
-
-export const FollowerHandle = styled.p`
-  color: #777;
-  font-size: 14px;
-`;
-
-export const FollowButton = styled.button`
-  background-color: #333;
-  color: #fff;
-  padding: 5px 15px;
-  border: none;
-  border-radius: 20px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #555;
-  }
-`;
-
-export const FollowingList = styled.div`
-  font-size: 14px;
-  border-bottom: 1px solid #333;
+export const FollowingAvatar = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
 `;
 
 export const FollowingInfo = styled.div`
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
 `;
 
 export const FollowingName = styled.h3`
-  font-size: 18px;
-  margin-bottom: 3px;
+  font-size: 16px;
+  color: #fff;
+  margin: 0;
 `;
 
 export const FollowingHandle = styled.p`
   color: #777;
   font-size: 14px;
+  margin: 0;
 `;
 
+export const FollowButton = styled.button`
+  background-color: ${({ following }) => (following ? "#333" : "#333" )};
+  color: ${({ following }) => (following ? "#fff" : "#fff")};
+  padding: 5px 15px;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  margin-left: auto;
+
+  &:hover {
+    background-color: ${({ following }) => (following ? "#555" : "#1a91da")};
+  }
+`;
+
+export const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+`;
+
+export const PaginationButton = styled.button`
+  background-color: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  margin: 10px 5px;
+  transition: background-color 0.3s;
+
+  &:disabled {
+    color: #777;
+    cursor: not-allowed;
+    background-color: #222;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #555;
+  }
+`;
+
+export const FollowerList = styled.div`
+  font-size: 14px;
+`;
+
+export const FollowerItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid #333;
+`;
+
+export const FollowerAvatar = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+`;
+
+export const FollowerInfo = styled.div`
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+`;
+
+export const FollowerName = styled.h3`
+  font-size: 16px;
+  color: #fff;
+  margin: 0;
+`;
+
+export const FollowerHandle = styled.p`
+  color: #777;
+  font-size: 14px;
+  margin: 0;
+`;
 
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Camera } from "lucide-react";
 import {
   ModalOverlay,
@@ -16,7 +16,7 @@ import {
 } from "./stylesModal";
 import { uploadFile } from "../../Connecting_to_Firebase/services/UploadService";
 import { db } from "../../Connecting_to_Firebase/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export const ProfileModal = ({
   isOpen,
@@ -26,17 +26,50 @@ export const ProfileModal = ({
   onProfileUpdated,
 }) => {
   const [formData, setFormData] = useState({
-    name: user?.displayName || "",
-    userName: user?.username || "",
-    bio: user?.bio || "",
+    name: "",
+    userName: "",
+    bio: "",
     profilePhoto: null,
     bannerPhoto: null,
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      if (isOpen) {
+        try {
+          const profileDoc = doc(db, "perfil", user.uid);
+          const profileSnapshot = await getDoc(profileDoc);
+
+          if (profileSnapshot.exists()) {
+            const profileData = profileSnapshot.data();
+            setFormData({
+              name: profileData.displayName || "",
+              userName: profileData.userName || "",
+              bio: profileData.bio || "",
+              profilePhoto: profileData.photoURL || null,
+              bannerPhoto: profileData.bannerURL || null,
+            });
+          } else {
+            setFormData({
+              name: "",
+              userName: "",
+              bio: "",
+              profilePhoto: null,
+              bannerPhoto: null,
+            });
+          }
+        } catch (error) {
+          console.error("Error al obtener el perfil:", error);
+        }
+      }
+    };
+
+    fetchProfileData();
+  }, [isOpen, user.uid]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.debug(`Campo cambiado: ${name} - Nuevo valor: ${value}`);
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -47,10 +80,8 @@ export const ProfileModal = ({
     const file = e.target.files[0];
     if (file) {
       setIsLoading(true);
-      console.debug(`Archivo seleccionado para ${type}:`, file);
       try {
         const downloadURL = await uploadFile(file, `perfil/${type}`);
-        console.debug(`URL de descarga para ${type}:`, downloadURL);
         setFormData((prev) => ({
           ...prev,
           [type]: downloadURL,
@@ -60,14 +91,11 @@ export const ProfileModal = ({
       } finally {
         setIsLoading(false);
       }
-    } else {
-      console.warn(`No se seleccionó ningún archivo para ${type}`);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.debug("Datos del formulario antes de guardar:", formData);
     try {
       await setDoc(doc(db, "perfil", user.uid), {
         displayName: formData.name,
@@ -75,18 +103,11 @@ export const ProfileModal = ({
         bio: formData.bio,
         photoURL: formData.profilePhoto,
         bannerURL: formData.bannerPhoto,
-      });
-      console.log("Perfil actualizado:", formData);
-      setFormData({
-        name: "",
-        userName: "",
-        bio: "",
-        profilePhoto: null,
-        bannerPhoto: null,
-      });
+        followers: [], 
+        following: [], 
+      }, { merge: true }); 
 
       onProfileUpdated(formData);
-
       onClose();
     } catch (error) {
       console.error("Error al guardar el perfil:", error);

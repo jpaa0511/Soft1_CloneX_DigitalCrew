@@ -16,7 +16,7 @@ import {
 export const UserSearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState([]);
-  const navigate = useNavigate(); // Hook para programar navegación
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timeOutId = setTimeout(() => {
@@ -40,7 +40,7 @@ export const UserSearchBar = () => {
     );
     const querySnapshot = await getDocs(q);
     const users = querySnapshot.docs.map((doc) => ({
-      userId: doc.id, // Incluye el userId único para la ruta
+      userId: doc.id, 
       userName: doc.data().userName,
       displayName: doc.data().displayName,
       photoURL: doc.data().photoURL,
@@ -49,7 +49,7 @@ export const UserSearchBar = () => {
   };
 
   const handleUserClick = (userId) => {
-    navigate(`/profile/${userId}`); // Navega a la ruta del perfil con userId
+    navigate(`/profile/${userId}`); 
   };
 
   return (

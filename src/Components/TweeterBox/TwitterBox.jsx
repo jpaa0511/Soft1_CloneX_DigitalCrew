@@ -1,5 +1,14 @@
 import { useState, useEffect, useContext } from "react";
-import { TwitterBox, Avatar, Div, Form, DivIcon, File, DivURL } from "./styles";
+import {
+  TwitterBox,
+  Avatar,
+  Div,
+  Form,
+  DivIcon,
+  File,
+  DivURL,
+  Alert,
+} from "./styles";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import GifIcon from "@mui/icons-material/Gif";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
@@ -7,64 +16,78 @@ import PollIcon from "@mui/icons-material/Poll";
 import { Button } from "@mui/material";
 import { uploadFile } from "../../Connecting_to_Firebase/services/UploadService";
 import { db } from "../../Connecting_to_Firebase/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  doc,
+  getDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { UserContext } from "../../auth/Contexts/UserContext";
 
 export const TwitterBoxs = () => {
-  confirm;
-  const [User, setUser] = useState("");
   const [tweeMsg, setTweeMsg] = useState("");
-  const [avatar, setAvatar] = useState("");
   const [post, setPost] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [tweetSuccess, setTweetSuccess] = useState(false);
   const { user } = useContext(UserContext);
 
   useEffect(() => {
-    const savedAvatar = localStorage.getItem("userAvatar");
-    if (savedAvatar) {
-      setAvatar(savedAvatar);
+    if (user?.uid) {
+      const fetchUserData = async () => {
+        try {
+          const docRef = doc(db, "perfil", user.uid);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            setUserName(userData.userName);
+            setAvatar(userData.photoURL);
+          } else {
+            console.log("Perfil de usuario no encontrado");
+          }
+        } catch (error) {
+          console.error("Error al obtener los datos del perfil:", error);
+        }
+      };
+
+      fetchUserData();
     }
-  }, []);
+  }, [user]);
 
   const sendTweet = async (e) => {
     e.preventDefault();
-    if (User.length < 1) {
-      alert("Debe escribir un nombre de usuario.");
-    }
+
     if (tweeMsg.length < 5 || tweeMsg.length > 280) {
-      alert("El tweet debe tener entre 5 y 300 caracteres.");
+      alert("El tweet debe tener entre 5 y 280 caracteres.");
+      return;
+    }
+    if (!userName || !avatar) {
+      alert(
+        "Debe actualizar su perfil para incluir un nombre de usuario y avatar antes de publicar."
+      );
       return;
     }
     try {
       await addDoc(collection(db, "posts"), {
-        username: User,
-        veridield: true,
+        userUid: user.uid,
+        username: userName,
+        verified: true,
         text: tweeMsg,
-        timestamp: Date.now(),
+        timestamp: serverTimestamp(),
         avatar: avatar,
         imagePost: post,
       });
-      setAvatar("");
+
       setTweeMsg("");
-      setUser("");
+      setPost("");
+      setTweetSuccess(true); 
+
+      setTimeout(() => setTweetSuccess(false), 3000);
     } catch (error) {
       console.error("Error al enviar el tweet:", error);
-    }
-  };
-
-  const handleAvatarChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setIsLoading(true);
-      try {
-        const downloadURL = await uploadFile(file, "avatar");
-        setAvatar(downloadURL);
-        localStorage.setItem("userAvatar", downloadURL);
-      } catch (error) {
-        console.error("Error al cambiar el avatar:", error);
-      } finally {
-        setIsLoading(false);
-      }
     }
   };
 
@@ -82,35 +105,22 @@ export const TwitterBoxs = () => {
         setIsLoading(false);
       }
     }
-    localStorage.removeItem("userAvatar");
   };
 
   return (
     <TwitterBox>
+      {tweetSuccess && (
+        <Alert show={tweetSuccess}>¡Tweet publicado con éxito!</Alert>
+      )}
       <Form>
         <Div>
-          <Avatar src={user?.photoURL} alt="" />
-          <File
-            type="file"
-            className="primary"
-            onChange={handleAvatarChange}
-            accept="image/*"
-          />
+          <Avatar src={avatar} alt="Avatar" />
           <div className="columbus">
             <input
               type="text"
               placeholder="¿Qué está pasando?"
               value={tweeMsg}
-              onChange={(e) => {
-                setTweeMsg(e.target.value);
-                console.log("Mensaje del tweet:", e.target.value);
-              }}
-            />
-            <input
-              type="text"
-              placeholder="Usuario"
-              value={User}
-              onChange={(e) => setUser(e.target.value)}
+              onChange={(e) => setTweeMsg(e.target.value)}
             />
           </div>
         </Div>
@@ -127,7 +137,7 @@ export const TwitterBoxs = () => {
         <DivURL>
           <input
             type="text"
-            placeholder="URL: Opcional de imeg"
+            placeholder="URL: Opcional de imagen"
             value={post}
             onChange={(e) => setPost(e.target.value)}
           />
