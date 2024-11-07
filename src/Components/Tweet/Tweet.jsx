@@ -19,6 +19,7 @@ import {
   where,
   limit as firestoreLimit,
   startAfter,
+  endBefore,
   onSnapshot,
   doc,
   getDoc,
@@ -33,20 +34,20 @@ export const Tweet = ({ userId, loggedInUserId, limit = 10, showAll = false }) =
   const [posts, setPosts] = useState([]);
   const [userProfiles, setUserProfiles] = useState({});
   const [lastVisible, setLastVisible] = useState(null);
+  const [firstVisible, setFirstVisible] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(null);
+  const [page, setPage] = useState(1);
   const { user } = useContext(UserContext);
 
-  const getPosts = (isNextPage = false) => {
+  const getPosts = (isNextPage = false, isPrevPage = false) => {
     setIsLoading(true);
     const postsRef = collection(db, "posts");
 
     let q;
     if (showAll) {
-      
       q = query(postsRef, orderBy("timestamp", "desc"), firestoreLimit(limit));
     } else {
-      
       q = query(
         postsRef,
         where("userUid", "==", userId),
@@ -57,11 +58,16 @@ export const Tweet = ({ userId, loggedInUserId, limit = 10, showAll = false }) =
 
     if (isNextPage && lastVisible) {
       q = query(q, startAfter(lastVisible));
+      setPage((prevPage) => prevPage + 1);
+    } else if (isPrevPage && firstVisible) {
+      q = query(q, endBefore(firstVisible));
+      setPage((prevPage) => prevPage - 1);
     }
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       if (snapshot.empty) {
         setIsLoading(false);
+        setPosts([]);
         return;
       }
 
@@ -70,7 +76,8 @@ export const Tweet = ({ userId, loggedInUserId, limit = 10, showAll = false }) =
         ...doc.data(),
       }));
 
-      setPosts((prevPosts) => (isNextPage ? [...prevPosts, ...newPosts] : newPosts));
+      setPosts(newPosts);
+      setFirstVisible(snapshot.docs[0]);
       setLastVisible(snapshot.docs[snapshot.docs.length - 1]);
       setIsLoading(false);
     });
@@ -134,44 +141,54 @@ export const Tweet = ({ userId, loggedInUserId, limit = 10, showAll = false }) =
 
   return (
     <div>
-      {posts.map((post) => (
-        <TweetContainer key={post.id}>
-          <Avatar
-            src={userProfiles[post.userUid]?.photoURL || "/default-avatar.png"}
-            alt="User Avatar"
-          />
-          <TweetContent>
-            <UserInfo>
-              <StyledLink to={`/profile/${post.userUid}`}>
-                {userProfiles[post.userUid]?.displayName || "User"}
-              </StyledLink>{" "}
-              <span>@{userProfiles[post.userUid]?.userName || post.username}</span>
-              {post.verified && <VerifiedUserIcon className="post_icon" />}
-              <TweetDate>
-                {post.timestamp ? formatDate(post.timestamp) : ""}
-              </TweetDate>
-            </UserInfo>
-            <OptionsButton onClick={() => toggleMenu(post.id)}>
-              <MoreHorizIcon />
-            </OptionsButton>
-            {showMenu === post.id && (
-              <OptionsMenu>
-                <button onClick={() => handleDelete(post.id, post.userUid)}>Delete</button>
-              </OptionsMenu>
-            )}
-            <Posts
-              veridield={post.veridield}
-              text={post.text}
-              imagenPost={post.imagePost}
-            />
-          </TweetContent>
-        </TweetContainer>
-      ))}
-      <PaginationContainer>
-        <PaginationButton onClick={() => getPosts(true)} disabled={isLoading}>
-          Load More
-        </PaginationButton>
-      </PaginationContainer>
+      {posts.length > 0 ? (
+        <>
+          {posts.map((post) => (
+            <TweetContainer key={post.id}>
+              <Avatar
+                src={userProfiles[post.userUid]?.photoURL || "/default-avatar.png"}
+                alt="User Avatar"
+              />
+              <TweetContent>
+                <UserInfo>
+                  <StyledLink to={`/profile/${post.userUid}`}>
+                    {userProfiles[post.userUid]?.displayName || "User"}
+                  </StyledLink>{" "}
+                  <span>@{userProfiles[post.userUid]?.userName || post.username}</span>
+                  {post.verified && <VerifiedUserIcon className="post_icon" />}
+                  <TweetDate>
+                    {post.timestamp ? formatDate(post.timestamp) : ""}
+                  </TweetDate>
+                </UserInfo>
+                <OptionsButton onClick={() => toggleMenu(post.id)}>
+                  <MoreHorizIcon />
+                </OptionsButton>
+                {showMenu === post.id && (
+                  <OptionsMenu>
+                    <button onClick={() => handleDelete(post.id, post.userUid)}>Delete</button>
+                  </OptionsMenu>
+                )}
+                <Posts
+                  veridield={post.veridield}
+                  text={post.text}
+                  imagenPost={post.imagePost}
+                />
+              </TweetContent>
+            </TweetContainer>
+          ))}
+          <PaginationContainer>
+            <PaginationButton onClick={() => getPosts(false, true)} disabled={isLoading || page === 1}>
+              Previous
+            </PaginationButton>
+            <span>Page {page}</span>
+            <PaginationButton onClick={() => getPosts(true)} disabled={isLoading || posts.length < limit}>
+              Next
+            </PaginationButton>
+          </PaginationContainer>
+        </>
+      ) : (
+        <p>There are no tweets yet.</p>
+      )}
     </div>
   );
 };
