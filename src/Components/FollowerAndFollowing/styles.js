@@ -117,7 +117,14 @@ export const FollowingName = styled.h3`
   font-size: 16px;
   color: #fff;
   margin: 0;
+  cursor: pointer; /* Indica que el elemento es clicable */
+  text-decoration: none; /* Remueve el subrayado */
+
+  &:hover {
+    color: #ccc; /* Cambia ligeramente el color en hover, opcional */
+  }
 `;
+
 
 export const FollowingHandle = styled.p`
   color: #777;
@@ -201,7 +208,14 @@ export const FollowerName = styled.h3`
   font-size: 16px;
   color: #fff;
   margin: 0;
+  cursor: pointer; /* Indica que el elemento es clicable */
+  text-decoration: none; /* Remueve el subrayado */
+
+  &:hover {
+    color: #ccc; /* Cambia ligeramente el color en hover, opcional */
+  }
 `;
+
 
 export const FollowerHandle = styled.p`
   color: #777;

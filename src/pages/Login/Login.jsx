@@ -41,15 +41,15 @@ const Login = () => {
           <XIcon style={{ fontSize: "400px", color: "#e7e9ea" }} />
         </SidebarLeft>
         <MainContent>
-          <Title>Lo que está pasando ahora</Title>
-          <h3>Únete hoy</h3>
+          <Title>Happening now</Title>
+          <h3>Join today.</h3>
           <br />
           <GoogleButton onClick={onLoginWithGoogle}>
             <img
               src="https://img.icons8.com/?size=512&id=17949&format=png"
               alt="Google icon"
             />{" "}
-            Ingresar con Google
+            Sing up with Google
           </GoogleButton>
           <br />
           <FacebookButton onClick={onLoginWithFacebook}>
@@ -57,15 +57,15 @@ const Login = () => {
               src="https://images.vexels.com/content/223136/preview/facebook-icon-social-media-8dfafe.png"
               alt="Facebook icon"
             />
-            Ingresar con Facebook
+            Sing up with Facebook
           </FacebookButton>
           <br />
-          <p>______________ o _________________</p>
+          <p>______________ or _________________</p>
           <br />
           <RegisterButton onClick={toggleModalLogin}>Login</RegisterButton>
           <br />
           <RegisterButton onClick={toggleModalRegister}>
-            CREAR CUENTA
+            Create account
           </RegisterButton>
         </MainContent>
         {isOpenModalLogin && (

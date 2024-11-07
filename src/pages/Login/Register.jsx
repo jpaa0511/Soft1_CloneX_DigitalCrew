@@ -11,6 +11,7 @@ const RegisterForm = ({
   displayName,
   email,
   password,
+  userName,
   onInputChange,
   onRegister,
   errorMessage,
@@ -44,6 +45,17 @@ const RegisterForm = ({
         />
       </InputRegister>
       <InputRegister>
+        <label htmlFor="email">UserName</label>
+        <input
+          type="text"
+          name="userName"
+          value={userName}
+          onChange={onInputChange}
+          placeholder="Enter your Username"
+          required
+        />
+      </InputRegister>
+      <InputRegister>
         <label htmlFor="password">Password</label>
         <input
           type="password"
@@ -54,7 +66,7 @@ const RegisterForm = ({
           required
         />
       </InputRegister>
-      <RegisterButton type="submit">CREAR CUENTA</RegisterButton>
+      <RegisterButton type="submit">Create account</RegisterButton>
     </Form>
     {errorMessage && (
       <p style={{ color: "red", marginTop: "10px" }}>{errorMessage}</p>

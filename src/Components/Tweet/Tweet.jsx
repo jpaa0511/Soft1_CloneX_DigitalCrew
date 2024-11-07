@@ -7,15 +7,19 @@ import {
   OptionsButton,
   OptionsMenu,
   StyledLink,
+  PaginationContainer,
+  PaginationButton,
+  TweetDate,
 } from "./styles";
 import { db } from "../../Connecting_to_Firebase/firebase";
 import {
   collection,
-  onSnapshot,
   query,
   orderBy,
   where,
   limit as firestoreLimit,
+  startAfter,
+  onSnapshot,
   doc,
   getDoc,
   deleteDoc,
@@ -25,40 +29,50 @@ import { UserContext } from "../../auth/Contexts/UserContext";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
-export const Tweet = ({ userId, loggedInUserId, limit = null, showAll = false }) => {
+export const Tweet = ({ userId, loggedInUserId, limit = 10, showAll = false }) => {
   const [posts, setPosts] = useState([]);
   const [userProfiles, setUserProfiles] = useState({});
-  const { user } = useContext(UserContext);
+  const [lastVisible, setLastVisible] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(null);
+  const { user } = useContext(UserContext);
 
-  const getPosts = () => {
+  const getPosts = (isNextPage = false) => {
+    setIsLoading(true);
     const postsRef = collection(db, "posts");
-    let q;
 
+    let q;
     if (showAll) {
-      q = query(postsRef, orderBy("timestamp", "desc"));
-    } else if (userId === loggedInUserId) {
-      q = query(
-        postsRef,
-        where("userUid", "==", loggedInUserId),
-        orderBy("timestamp", "desc"),
-        firestoreLimit(limit || 10)
-      );
+      
+      q = query(postsRef, orderBy("timestamp", "desc"), firestoreLimit(limit));
     } else {
+      
       q = query(
         postsRef,
         where("userUid", "==", userId),
         orderBy("timestamp", "desc"),
-        firestoreLimit(limit || 10)
+        firestoreLimit(limit)
       );
     }
 
+    if (isNextPage && lastVisible) {
+      q = query(q, startAfter(lastVisible));
+    }
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map((doc) => ({
+      if (snapshot.empty) {
+        setIsLoading(false);
+        return;
+      }
+
+      const newPosts = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      setPosts(docs);
+
+      setPosts((prevPosts) => (isNextPage ? [...prevPosts, ...newPosts] : newPosts));
+      setLastVisible(snapshot.docs[snapshot.docs.length - 1]);
+      setIsLoading(false);
     });
 
     return unsubscribe;
@@ -80,7 +94,7 @@ export const Tweet = ({ userId, loggedInUserId, limit = null, showAll = false })
   useEffect(() => {
     const unsubscribe = getPosts();
     return () => unsubscribe();
-  }, [userId, loggedInUserId, limit, showAll]);
+  }, [userId, showAll]);
 
   useEffect(() => {
     posts.forEach((post) => {
@@ -90,7 +104,7 @@ export const Tweet = ({ userId, loggedInUserId, limit = null, showAll = false })
 
   const handleDelete = async (id, postUid) => {
     if (user?.uid !== postUid) {
-      alert("No puedes eliminar el post de otro usuario.");
+      alert("You can't delete another user's post.");
       return;
     }
 
@@ -98,12 +112,24 @@ export const Tweet = ({ userId, loggedInUserId, limit = null, showAll = false })
       await deleteDoc(doc(db, "posts", id));
       console.log(`Post with id ${id} deleted`);
     } catch (error) {
-      console.error("Error deleting post: ", error);
+      console.error("Error deleting post:", error);
     }
   };
 
   const toggleMenu = (id) => {
-    setShowMenu(showMenu === id ? null : id);
+    setShowMenu((prevShowMenu) => (prevShowMenu === id ? null : id));
+  };
+
+  const formatDate = (timestamp) => {
+    const date = timestamp.toDate();
+    return date.toLocaleString("en-US", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
   };
 
   return (
@@ -117,17 +143,20 @@ export const Tweet = ({ userId, loggedInUserId, limit = null, showAll = false })
           <TweetContent>
             <UserInfo>
               <StyledLink to={`/profile/${post.userUid}`}>
-                {userProfiles[post.userUid]?.displayName || "Usuario"}
+                {userProfiles[post.userUid]?.displayName || "User"}
               </StyledLink>{" "}
               <span>@{userProfiles[post.userUid]?.userName || post.username}</span>
               {post.verified && <VerifiedUserIcon className="post_icon" />}
+              <TweetDate>
+                {post.timestamp ? formatDate(post.timestamp) : ""}
+              </TweetDate>
             </UserInfo>
             <OptionsButton onClick={() => toggleMenu(post.id)}>
               <MoreHorizIcon />
             </OptionsButton>
             {showMenu === post.id && (
               <OptionsMenu>
-                <button onClick={() => handleDelete(post.id, post.userUid)}>Eliminar</button>
+                <button onClick={() => handleDelete(post.id, post.userUid)}>Delete</button>
               </OptionsMenu>
             )}
             <Posts
@@ -138,6 +167,11 @@ export const Tweet = ({ userId, loggedInUserId, limit = null, showAll = false })
           </TweetContent>
         </TweetContainer>
       ))}
+      <PaginationContainer>
+        <PaginationButton onClick={() => getPosts(true)} disabled={isLoading}>
+          Load More
+        </PaginationButton>
+      </PaginationContainer>
     </div>
   );
 };

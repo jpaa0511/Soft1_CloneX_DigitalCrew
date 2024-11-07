@@ -188,10 +188,22 @@ function Following() {
               <FollowingList>
                 {paginatedFollowing.map((followingUser) => (
                   <FollowingItem key={followingUser.uid}>
-                    <FollowingAvatar src={followingUser.photoURL} alt="Avatar" />
+                    <FollowingAvatar
+                      src={followingUser.photoURL}
+                      alt="Avatar"
+                    />
                     <FollowingInfo>
-                      <FollowingName>{followingUser.displayName}</FollowingName>
-                      <FollowingHandle>@{followingUser.userName}</FollowingHandle>
+                      <FollowingName
+                        onClick={() =>
+                          navigate(`/profile/${followingUser.uid}`)
+                        }
+                      >
+                        {followingUser.displayName}
+                      </FollowingName>
+
+                      <FollowingHandle>
+                        @{followingUser.userName}
+                      </FollowingHandle>
                     </FollowingInfo>
                     <FollowButton
                       following={followingUser.isFollowing}

@@ -33,7 +33,7 @@ export const UserInfo = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 5px;
-  padding: 10px:
+  padding: 10px;
 
   strong {
     margin-right: 5px;
@@ -219,4 +219,37 @@ export const Alert = styled.div`
   display: ${({ show }) => (show ? "block" : "none")};
   transition: opacity 0.3s ease-in-out;
   opacity: ${({ show }) => (show ? 1 : 0)};
+`;
+
+export const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+`;
+
+export const PaginationButton = styled.button`
+  background-color: #1da1f2;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:disabled {
+    background-color: #5b7083;
+    cursor: not-allowed;
+  }
+
+  &:hover:enabled {
+    background-color: #1991da;
+  }
+`;
+
+export const TweetDate = styled.span`
+  margin-left: 10px;
+  font-size: 14px;
+  color: #8899a6;
 `;

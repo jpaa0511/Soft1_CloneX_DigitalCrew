@@ -18,15 +18,25 @@ import {
   BackButtonContainer,
   FollowButton,
   FollowerAvatar,
-} from "./styles"; 
-import { Container, SidebarContainer, WidgetsContainer } from "../../pages/Home/styles";
+} from "./styles";
+import {
+  Container,
+  SidebarContainer,
+  WidgetsContainer,
+} from "../../pages/Home/styles";
 import { Sidebar } from "../../Components/Sidebar";
 import { Widgets } from "../../Components/Widgets";
 import GlobalStyles from "../../styles/StylesGlobal";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../auth/Contexts/UserContext";
-import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
 import { db } from "../../Connecting_to_Firebase/firebase";
 
 function Follower() {
@@ -67,7 +77,8 @@ function Follower() {
                   displayName: followerUserData.displayName,
                   userName: followerUserData.userName,
                   photoURL: followerUserData.photoURL || "/default-avatar.png",
-                  isFollowing: profile.following?.includes(followerUserId) || false,
+                  isFollowing:
+                    profile.following?.includes(followerUserId) || false,
                 };
               }
               return null;
@@ -177,7 +188,13 @@ function Follower() {
                   <FollowerItem key={followerUser.uid}>
                     <FollowerAvatar src={followerUser.photoURL} alt="Avatar" />
                     <FollowerInfo>
-                      <FollowerName>{followerUser.displayName}</FollowerName>
+                      <FollowerName
+                        onClick={() =>
+                          navigate(`/profile/${followerUser.uid}`)
+                        }
+                      >
+                        {followerUser.displayName}
+                      </FollowerName>
                       <FollowerHandle>@{followerUser.userName}</FollowerHandle>
                     </FollowerInfo>
                     <FollowButton

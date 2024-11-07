@@ -212,7 +212,7 @@ const XProfile = () => {
               </a>
             </li>
           </TabsContainer>
-          <Tweet userId={userId} loggedInUserId={user.uid} limit={10} />
+          <Tweet userId={userId} loggedInUserId={user.uid} showAll={false} />
         </Container>
         <WidgetsContainer>
           <Widgets />

@@ -83,7 +83,7 @@ export const TwitterBoxs = () => {
 
       setTweeMsg("");
       setPost("");
-      setTweetSuccess(true); 
+      setTweetSuccess(true);
 
       setTimeout(() => setTweetSuccess(false), 3000);
     } catch (error) {
@@ -107,20 +107,27 @@ export const TwitterBoxs = () => {
     }
   };
 
+  const handleTextareaChange = (e) => {
+    setTweeMsg(e.target.value);
+    e.target.style.height = "auto";
+    e.target.style.height = `${e.target.scrollHeight}px`;
+  };
+
   return (
     <TwitterBox>
       {tweetSuccess && (
-        <Alert show={tweetSuccess}>¡Tweet publicado con éxito!</Alert>
+        <Alert show={tweetSuccess}>Tweet posted successfully!</Alert>
       )}
       <Form>
         <Div>
           <Avatar src={avatar} alt="Avatar" />
           <div className="columbus">
-            <input
-              type="text"
-              placeholder="¿Qué está pasando?"
+            <textarea
+              placeholder="What is happening?!"
               value={tweeMsg}
-              onChange={(e) => setTweeMsg(e.target.value)}
+              onChange={handleTextareaChange}
+              rows="1"
+              maxLength="280"
             />
           </div>
         </Div>
@@ -137,7 +144,7 @@ export const TwitterBoxs = () => {
         <DivURL>
           <input
             type="text"
-            placeholder="URL: Opcional de imagen"
+            placeholder="URL: IMG or GIF"
             value={post}
             onChange={(e) => setPost(e.target.value)}
           />

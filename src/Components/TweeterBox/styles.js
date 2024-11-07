@@ -31,7 +31,6 @@ export const Header = styled.header`
   }
 `;
 
-/*BoxTwitter */
 export const TwitterBox = styled.div`
   padding: 5px 15px;
   border-bottom: 1px solid #ddd;
@@ -47,7 +46,7 @@ export const Avatar = styled.img`
 export const Div = styled.div`
   display: flex;
   width: 100%;
-  position: relative; 
+  position: relative;
   align-items: flex-start;
   justify-content: space-between; /* Asegura que los elementos se distribuyan correctamente */
 
@@ -56,8 +55,8 @@ export const Div = styled.div`
     flex-direction: column;
     width: 100%;
     padding-left: 10px;
-    
-    > input {
+
+    > textarea {
       margin-top: 8px;
       width: 100%;
       border: none;
@@ -66,7 +65,9 @@ export const Div = styled.div`
       line-height: 24px;
       background: transparent;
       color: #ffffff;
-      
+      resize: none; // Evita el cambio de tamaño manual
+      overflow: hidden; // Oculta el scroll
+
       &::placeholder {
         color: #8899a6;
       }
@@ -178,7 +179,8 @@ export const Alert = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   font-size: 16px;
   z-index: 1000;
-  display: ${({ show }) => (show ? "block" : "none")}; /* Ocultar cuando show es false */
+  display: ${({ show }) =>
+    show ? "block" : "none"}; /* Ocultar cuando show es false */
   transition: opacity 0.3s ease-in-out;
   opacity: ${({ show }) => (show ? 1 : 0)};
 `;
