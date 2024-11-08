@@ -16,6 +16,8 @@ import {
   orderBy,
   where,
   limit as firestoreLimit,
+  startAfter,
+  endBefore,
   onSnapshot,
   doc,
   getDoc,
@@ -27,6 +29,8 @@ import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 export const Tweet = ({ userId, limit = 10, showAll = false }) => {
   const [posts, setPosts] = useState([]);
   const [following, setFollowing] = useState([]);
+  const [lastVisible, setLastVisible] = useState(null);
+  const [firstVisible, setFirstVisible] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useContext(UserContext);
 
@@ -41,47 +45,41 @@ export const Tweet = ({ userId, limit = 10, showAll = false }) => {
     }
   };
 
-  const getPosts = () => {
+  const getPosts = (isNextPage = false, isPrevPage = false) => {
     setIsLoading(true);
     const postsRef = collection(db, "posts");
-    let q;
 
-    if (showAll) {
-      const usersToQuery = [user.uid, ...following].filter(Boolean);
-      q = query(
-        postsRef,
-        where("userUid", "in", usersToQuery),
-        orderBy("timestamp", "desc"),
-        firestoreLimit(limit)
-      );
-    } else if (userId) {
-      q = query(
-        postsRef,
-        where("userUid", "==", userId),
-        orderBy("timestamp", "desc"),
-        firestoreLimit(limit)
-      );
-    } else {
-      setIsLoading(false);
-      return;
+    const usersToQuery = showAll ? [user.uid, ...following] : [userId];
+    let q = query(postsRef, where("userUid", "in", usersToQuery), orderBy("timestamp", "desc"), firestoreLimit(limit));
+
+    if (isNextPage && lastVisible) {
+      q = query(q, startAfter(lastVisible));
+    } else if (isPrevPage && firstVisible) {
+      q = query(q, endBefore(firstVisible));
     }
 
     const unsubscribe = onSnapshot(q, async (snapshot) => {
-      const postData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      if (!snapshot.empty) {
+        const newPosts = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-      const postsWithDisplayName = await Promise.all(
-        postData.map(async (post) => {
-          const userDocRef = doc(db, "perfil", post.userUid);
-          const userSnapshot = await getDoc(userDocRef);
-          const displayName = userSnapshot.exists() ? userSnapshot.data().displayName : "User";
-          return { ...post, displayName };
-        })
-      );
+        const postsWithDisplayName = await Promise.all(
+          newPosts.map(async (post) => {
+            const userDocRef = doc(db, "perfil", post.userUid);
+            const userSnapshot = await getDoc(userDocRef);
+            const displayName = userSnapshot.exists() ? userSnapshot.data().displayName : "User";
+            return { ...post, displayName };
+          })
+        );
 
-      setPosts(postsWithDisplayName);
+        setPosts(postsWithDisplayName);
+        setFirstVisible(snapshot.docs[0]);
+        setLastVisible(snapshot.docs[snapshot.docs.length - 1]);
+      } else {
+        setPosts([]);
+      }
       setIsLoading(false);
     });
 
@@ -95,7 +93,7 @@ export const Tweet = ({ userId, limit = 10, showAll = false }) => {
   }, [user?.uid]);
 
   useEffect(() => {
-    if ((showAll && following.length > 0) || (!showAll && userId)) {
+    if ((showAll && user.uid) || (!showAll && userId)) {
       const unsubscribe = getPosts();
       return () => unsubscribe && unsubscribe();
     }
@@ -129,10 +127,16 @@ export const Tweet = ({ userId, limit = 10, showAll = false }) => {
             </TweetContainer>
           ))}
           <PaginationContainer>
-            <PaginationButton onClick={() => getPosts(false, true)} disabled={isLoading}>
+            <PaginationButton
+              onClick={() => getPosts(false, true)}
+              disabled={isLoading || !firstVisible}
+            >
               Previous
             </PaginationButton>
-            <PaginationButton onClick={() => getPosts(true)} disabled={isLoading}>
+            <PaginationButton
+              onClick={() => getPosts(true)}
+              disabled={isLoading || !lastVisible}
+            >
               Next
             </PaginationButton>
           </PaginationContainer>
