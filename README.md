@@ -30,7 +30,7 @@ Además, el proyecto cuenta con un backend también en JavaScript, con el propó
    cd Soft1_CloneX_DigitalCrew
 3. Cambia a la rama de entrega:
    ```bash
-   git checkout release/v1.0
+   git checkout release/v3.0
 4. Instala las dependencias necesarias:
    ```bash
    npm install
