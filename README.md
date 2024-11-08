@@ -24,10 +24,10 @@ Además, el proyecto cuenta con un backend también en JavaScript, con el propó
 ### Clonar el repositorio:
 1. Clona el repositorio del proyecto, puedes usar git bash:
    ```bash
-   git clone https://github.com/jpaa0511/Soft1_CloneX_DigitalCrew.git
+   git clone https://github.com/jpaa0511/Soft1_CloneX_DigitalCrewNew.git
 2. Navega dentro del repositorio:
    ```bash
-   cd Soft1_CloneX_DigitalCrew
+   cd Soft1_CloneX_DigitalCrewNew
 3. Cambia a la rama de entrega:
    ```bash
    git checkout release/v3.0
