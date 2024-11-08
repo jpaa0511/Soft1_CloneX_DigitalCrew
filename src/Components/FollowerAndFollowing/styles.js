@@ -125,7 +125,6 @@ export const FollowingName = styled.h3`
   }
 `;
 
-
 export const FollowingHandle = styled.p`
   color: #777;
   font-size: 14px;
@@ -133,7 +132,7 @@ export const FollowingHandle = styled.p`
 `;
 
 export const FollowButton = styled.button`
-  background-color: ${({ following }) => (following ? "#333" : "#333" )};
+  background-color: ${({ following }) => (following ? "#333" : "#333")};
   color: ${({ following }) => (following ? "#fff" : "#fff")};
   padding: 5px 15px;
   border: none;
@@ -156,24 +155,22 @@ export const PaginationContainer = styled.div`
 `;
 
 export const PaginationButton = styled.button`
-  background-color: #333;
+  background-color: #1da1f2;
   color: #fff;
-  padding: 5px 10px;
   border: none;
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: 5px;
+  padding: 5px 15px;
+  margin: 0 5px;
   cursor: pointer;
-  margin: 10px 5px;
   transition: background-color 0.3s;
 
   &:disabled {
-    color: #777;
+    background-color: #5b7083;
     cursor: not-allowed;
-    background-color: #222;
   }
 
-  &:hover:not(:disabled) {
-    background-color: #555;
+  &:hover:enabled {
+    background-color: #1991da;
   }
 `;
 
@@ -216,11 +213,8 @@ export const FollowerName = styled.h3`
   }
 `;
 
-
 export const FollowerHandle = styled.p`
   color: #777;
   font-size: 14px;
   margin: 0;
 `;
-
-

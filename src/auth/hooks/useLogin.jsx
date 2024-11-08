@@ -45,15 +45,12 @@ export const useLogin = () => {
 
   const onRegister = async (event) => {
     event.preventDefault();
-  
-    // Primero, registra el usuario y obtiene el UID
+
     const signUpResult = await signUpUser(email, password, displayName);
-  
-    // Verifica si el usuario fue creado correctamente
+
     if (signUpResult.success) {
       const { uid } = signUpResult;
-  
-      // Guarda el perfil en Firestore usando el UID del nuevo usuario
+
       await setDoc(doc(db, "perfil", uid), {
         bannerURL: "",
         Bio: "",
@@ -63,17 +60,14 @@ export const useLogin = () => {
         photoURL: "",
         userName: userName,
       });
-  
-      // Opcional: Cierra el modal de registro
+
       toggleModalRegister();
-  
-      // Redirige al usuario
+
       navigate("/main", { replace: true });
     } else {
       console.error("Error al registrar usuario:", signUpResult.errorMessage);
     }
   };
-  
 
   const toggleModalRegister = () => {
     setOpenModalRegister(!isOpenModalRegister);

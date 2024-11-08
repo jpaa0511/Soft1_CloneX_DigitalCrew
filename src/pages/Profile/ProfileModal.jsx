@@ -60,7 +60,7 @@ export const ProfileModal = ({
             });
           }
         } catch (error) {
-          console.error("Error al obtener el perfil:", error);
+          console.error("Error fetching profile:", error);
         }
       }
     };
@@ -87,7 +87,7 @@ export const ProfileModal = ({
           [type]: downloadURL,
         }));
       } catch (error) {
-        console.error("Error al subir la imagen:", error);
+        console.error("Error uploading image:", error);
       } finally {
         setIsLoading(false);
       }
@@ -97,7 +97,6 @@ export const ProfileModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Crear o actualizar el perfil en Firestore
       await setDoc(
         doc(db, "perfil", user.uid),
         {
@@ -106,19 +105,19 @@ export const ProfileModal = ({
           bio: formData.bio,
           photoURL: formData.profilePhoto,
           bannerURL: formData.bannerPhoto,
-          followers: [], 
-          following: [], 
+          followers: [],
+          following: [],
         },
         { merge: true }
       );
 
       if (onProfileUpdated) {
-        onProfileUpdated(formData); // Llama si está definida
+        onProfileUpdated(formData);
       }
       onClose();
       window.location.reload();
     } catch (error) {
-      console.error("Error al guardar el perfil:", error);
+      console.error("Error saving profile:", error);
     }
   };
 
@@ -135,7 +134,7 @@ export const ProfileModal = ({
         <Form onSubmit={handleSubmit}>
           <ImageSection>
             {isLoading ? (
-              <p>Cargando imagen...</p>
+              <p>Uploading image...</p>
             ) : (
               <>
                 <BannerImage $url={formData.bannerPhoto || user?.bannerURL}>
@@ -202,7 +201,7 @@ export const ProfileModal = ({
           </InputGroup>
 
           <SaveButton type="submit" disabled={isLoading}>
-            {isLoading ? "Guardando..." : "Guardar"}
+            {isLoading ? "Saving..." : "Save"}
           </SaveButton>
         </Form>
 

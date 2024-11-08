@@ -5,8 +5,8 @@ import { storage } from "../firebase";
 export function uploadFile(file, folder = "avatar") {
   return new Promise((resolve, reject) => {
     if (!file) {
-      console.error("No se seleccionó ningún archivo");
-      reject(new Error("No se seleccionó ningún archivo"));
+      console.error("No file selected");
+      reject(new Error("No file selected"));
       return;
     }
 
@@ -17,15 +17,15 @@ export function uploadFile(file, folder = "avatar") {
 
     uploadBytes(storageRef, file)
       .then((snapshot) => {
-        console.log("Archivo subido exitosamente!", snapshot);
+        console.log("File uploaded successfully!", snapshot);
         return getDownloadURL(snapshot.ref);
       })
       .then((downloadURL) => {
-        console.log("URL de descarga:", downloadURL);
+        console.log("Download URL:", downloadURL);
         resolve(downloadURL);
       })
       .catch((error) => {
-        console.error("Error al subir el archivo:", error);
+        console.error("Error uploading file:", error);
         reject(error);
       });
   });

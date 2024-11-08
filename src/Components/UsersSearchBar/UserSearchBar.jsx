@@ -40,7 +40,7 @@ export const UserSearchBar = () => {
     );
     const querySnapshot = await getDocs(q);
     const users = querySnapshot.docs.map((doc) => ({
-      userId: doc.id, 
+      userId: doc.id,
       userName: doc.data().userName,
       displayName: doc.data().displayName,
       photoURL: doc.data().photoURL,
@@ -49,7 +49,7 @@ export const UserSearchBar = () => {
   };
 
   const handleUserClick = (userId) => {
-    navigate(`/profile/${userId}`); 
+    navigate(`/profile/${userId}`);
   };
 
   return (
@@ -63,7 +63,10 @@ export const UserSearchBar = () => {
       {results.length > 0 && (
         <ResultsContainer>
           {results.map((user) => (
-            <UserResult key={user.userId} onClick={() => handleUserClick(user.userId)}>
+            <UserResult
+              key={user.userId}
+              onClick={() => handleUserClick(user.userId)}
+            >
               <UserProfilePicture src={user.photoURL} alt={user.userName} />
               <UserInfo>
                 <UserName>{user.userName}</UserName>

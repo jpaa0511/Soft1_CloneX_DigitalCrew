@@ -18,7 +18,13 @@ import { Container, SidebarContainer, WidgetsContainer } from "../Home/styles";
 import { Tweet } from "../../Components/Tweet/Tweet";
 import { ProfileModal } from "./ProfileModal";
 import { useParams } from "react-router-dom";
-import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
 import { db } from "../../Connecting_to_Firebase/firebase";
 
 const XProfile = () => {
@@ -57,19 +63,23 @@ const XProfile = () => {
               userName: userData.userName || user.userName || "Usuario",
               following: userData.following || user.following || 0,
               followers: userData.followers || user.followers || 0,
-              bannerURL: userData.bannerURL || "https://example.com/default-cover.jpg",
+              bannerURL:
+                userData.bannerURL || "https://example.com/default-cover.jpg",
               joinDate: userData.joinDate || user.joinDate || "N/A",
             });
             setIsFollowing(userData.followers?.includes(user.uid) || false);
           } else {
-            console.error("User does not exist in Firestore. Loading from context.");
+            console.error(
+              "User does not exist in Firestore. Loading from context."
+            );
             setUserData({
               displayName: user.displayName,
               photoURL: user.photoURL || User,
               userName: user.userName || "Usuario",
               following: user.following || 0,
               followers: user.followers || 0,
-              bannerURL: user.bannerURL || "https://example.com/default-cover.jpg",
+              bannerURL:
+                user.bannerURL || "https://example.com/default-cover.jpg",
               joinDate: user.joinDate || "N/A",
             });
           }
@@ -157,12 +167,10 @@ const XProfile = () => {
               <ProfileButton onClick={handleModalToggle}>
                 Edit profile
               </ProfileButton>
+            ) : isFollowing ? (
+              <ProfileButton onClick={unfollowUser}>Unfollow</ProfileButton>
             ) : (
-              isFollowing ? (
-                <ProfileButton onClick={unfollowUser}>Unfollow</ProfileButton>
-              ) : (
-                <ProfileButton onClick={followUser}>Follow</ProfileButton>
-              )
+              <ProfileButton onClick={followUser}>Follow</ProfileButton>
             )}
             <ProfileModal
               isOpen={isOpenModalProfile}
@@ -178,11 +186,15 @@ const XProfile = () => {
               <p className="userName">@{userData.userName}</p>
               <Stats>
                 <StatItem href={`/profile/${userId || user.uid}/following`}>
-                  <span className="number">{userData.following?.length || 0}</span>
+                  <span className="number">
+                    {userData.following?.length || 0}
+                  </span>
                   <span className="text">Following</span>
                 </StatItem>
                 <StatItem href={`/profile/${userId || user.uid}/followers`}>
-                  <span className="number">{userData.followers?.length || 0}</span>
+                  <span className="number">
+                    {userData.followers?.length || 0}
+                  </span>
                   <span className="text">Followers</span>
                 </StatItem>
               </Stats>
@@ -219,7 +231,7 @@ const XProfile = () => {
                 Likes
               </a>
             </li>
-          </TabsContainer>  
+          </TabsContainer>
           <Tweet userId={userId} loggedInUserId={user.uid} showAll={false} />
         </Container>
         <WidgetsContainer>

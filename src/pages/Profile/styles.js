@@ -10,13 +10,13 @@ export const ProfileHeaderContainer = styled.div`
   .header-top {
     padding: 16px;
     border-bottom: 1px solid #2f3336;
-    
+
     h2 {
       font-size: 20px;
       font-weight: bold;
       margin: 0;
     }
-    
+
     span {
       font-size: 13px;
       color: #71767b;
@@ -28,13 +28,13 @@ export const ProfileHeaderContainer = styled.div`
     height: 200px;
     background-color: #333;
     position: relative;
-    
+
     .cover-photo {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-    
+
     .profile-photo {
       position: absolute;
       bottom: -60px;
@@ -50,7 +50,7 @@ export const ProfileHeaderContainer = styled.div`
   .profile-info {
     padding: 16px;
     margin-top: 60px;
-    
+
     .profile-name {
       font-size: 20px;
       font-weight: bold;
@@ -61,12 +61,12 @@ export const ProfileHeaderContainer = styled.div`
       color: white;
       padding-bottom: 5px;
     }
-    
+
     .username {
       color: #71767b;
       margin: 0;
     }
-    
+
     .join-date {
       display: flex;
       align-items: center;
@@ -74,15 +74,15 @@ export const ProfileHeaderContainer = styled.div`
       margin-top: 12px;
       gap: 4px;
     }
-    
+
     .stats {
       display: flex;
       gap: 20px;
       margin-top: 12px;
-      
+
       span {
         color: #71767b;
-        
+
         strong {
           color: #fff;
         }
@@ -116,7 +116,7 @@ export const StatItem = styled.a`
   }
 
   &:hover::after {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     bottom: -2px;
@@ -128,7 +128,7 @@ export const StatItem = styled.a`
 
 export const ProfileButton = styled.button`
   position: absolute;
-  right: 360px;
+  right: 560px;
   top: 240px;
   background-color: transparent;
   color: #fff;
@@ -137,7 +137,7 @@ export const ProfileButton = styled.button`
   border-radius: 9999px;
   padding: 8px 16px;
   cursor: pointer;
-  
+
   &:hover {
     background-color: rgba(239, 243, 244, 0.1);
   }
@@ -161,14 +161,14 @@ export const TabsContainer = styled.ul`
       color: #71767b;
       text-decoration: none;
       font-size: 15px;
-      
+
       &.active {
         color: #fff;
         font-weight: bold;
         position: relative;
-        
+
         &:after {
-          content: '';
+          content: "";
           position: absolute;
           bottom: 0;
           left: 0;

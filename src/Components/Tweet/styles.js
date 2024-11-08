@@ -52,6 +52,7 @@ export const StyledLink = styled(Link)`
   cursor: pointer;
   font-weight: bold;
   font-size: 15px;
+  margin-right: 5px;
 
   &:hover {
     color: #1da1f2;
@@ -146,7 +147,7 @@ export const Images = styled.img`
 export const PostBody = styled.div`
   width: 100%;
   overflow: hidden;
-  
+
   > div {
     span {
       font-weight: 600;

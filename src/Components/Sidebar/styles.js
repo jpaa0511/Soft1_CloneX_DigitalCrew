@@ -21,13 +21,13 @@ export const LogoContainer = styled.div`
   padding: 14px 10px;
   cursor: pointer;
   color: white; /* Color azul */
-  
+
   .MuiSvgIcon-root {
     width: 30px;
     height: 30px;
     color: white; /* Asegura el color azul */
   }
-  
+
   &:hover {
     background-color: #192734;
     transition: background-color 200ms ease-out;

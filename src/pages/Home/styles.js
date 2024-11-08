@@ -35,7 +35,7 @@ export const Div = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-    
+
     > input {
       margin-top: 10px;
       width: 100%;
@@ -61,7 +61,7 @@ export const Div = styled.div`
     boder: none !important;
     color: white !important;
     font-weight: 600 !important;
-   
+
     height: 32px !important;
     margin-top: 20px !important;
     border-radius: 30px !important;
@@ -105,8 +105,6 @@ export const Button = styled.button`
   }
 `;
 
-
-
 export const Container = styled.main`
   display: flex;
   flex-direction: column;
@@ -120,7 +118,6 @@ export const Container = styled.main`
 export const SidebarContainer = styled.aside`
   flex-basis: 270px; /* Ancho fijo para el sidebar */
   padding: 10px;
-  
 `;
 
 export const WidgetsContainer = styled.aside`

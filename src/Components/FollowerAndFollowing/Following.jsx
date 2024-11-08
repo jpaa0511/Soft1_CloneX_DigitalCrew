@@ -18,7 +18,7 @@ import {
   BackButtonContainer,
   FollowButton,
   FollowingAvatar,
-} from "./styles"; // Importa los estilos desde styles.js
+} from "./styles";
 import {
   Container,
   SidebarContainer,
@@ -47,7 +47,7 @@ function Following() {
   const [followingData, setFollowingData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeTab, setActiveTab] = useState("following"); // Control de pestaña activa
+  const [activeTab, setActiveTab] = useState("following");
   const pageSize = 10;
 
   const handleClick = () => {
@@ -123,7 +123,7 @@ function Following() {
         )
       );
     } catch (error) {
-      console.error("Error al actualizar el seguimiento:", error);
+      console.error("Error updating following status:", error);
     } finally {
       setIsLoading(false);
     }
@@ -224,7 +224,7 @@ function Following() {
                     Preview
                   </PaginationButton>
                   <span>
-                    Page {currentPage} de {totalPages}
+                    Page {currentPage} of {totalPages}
                   </span>
                   <PaginationButton
                     onClick={handleNextPage}

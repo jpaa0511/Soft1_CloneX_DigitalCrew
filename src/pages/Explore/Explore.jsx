@@ -10,31 +10,28 @@ import {
   UserSuggestions,
   UserProfilePicture,
   FollowButton,
+  StyledLink,
 } from "./styles";
 import { UserSearchBar } from "../../Components/UsersSearchBar/UserSearchBar";
-import { Container, SidebarContainer, WidgetsContainer } from "../../pages/Home/styles";
+import {
+  Container,
+  SidebarContainer,
+  WidgetsContainer,
+} from "../../pages/Home/styles";
 import { db } from "../../Connecting_to_Firebase/firebase";
-import { collection, getDocs, doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore"; // Asegúrate de importar doc, updateDoc, arrayUnion, y arrayRemove
+import {
+  collection,
+  getDocs,
+  doc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
 import { UserContext } from "../../auth/Contexts/UserContext";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-
-// Estilos personalizados para el enlace al perfil del usuario
-export const StyledLink = styled(Link)`
-  text-decoration: none;
-  color: #ffffff;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 15px;
-
-  &:hover {
-    color: #1da1f2;
-  }
-`;
 
 const Explore = () => {
   const [userSuggestions, setUserSuggestions] = useState([]);
-  const { user } = useContext(UserContext); // Usuario actual del contexto
+  const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,11 +42,11 @@ const Explore = () => {
         .map((doc) => ({
           id: doc.id,
           ...doc.data(),
-          isFollowing: (doc.data().followers || []).includes(user.uid), // Verificar si el usuario actual ya sigue a este usuario
+          isFollowing: (doc.data().followers || []).includes(user.uid),
         }))
-        // Excluir el usuario logueado
+
         .filter((u) => u.id !== user.uid)
-        // Ordenar alfabéticamente por displayName
+
         .sort((a, b) => a.displayName.localeCompare(b.displayName));
 
       setUserSuggestions(usersList);
@@ -64,7 +61,6 @@ const Explore = () => {
       const followedUserDoc = doc(db, "perfil", userId);
 
       if (isFollowing) {
-        // Dejar de seguir
         await updateDoc(userDoc, {
           following: arrayRemove(userId),
         });
@@ -72,7 +68,6 @@ const Explore = () => {
           followers: arrayRemove(user.uid),
         });
       } else {
-        // Seguir al usuario
         await updateDoc(userDoc, {
           following: arrayUnion(userId),
         });
@@ -81,7 +76,6 @@ const Explore = () => {
         });
       }
 
-      // Actualizar la lista de sugerencias para reflejar el cambio
       setUserSuggestions((prevSuggestions) =>
         prevSuggestions.map((suggestion) =>
           suggestion.id === userId
@@ -111,14 +105,21 @@ const Explore = () => {
             {userSuggestions.map((userSuggestion) => (
               <UserSuggestions key={userSuggestion.id}>
                 <UserProfilePicture
-                  src={userSuggestion.photoURL || "https://via.placeholder.com/150"}
+                  src={
+                    userSuggestion.photoURL || "https://via.placeholder.com/150"
+                  }
                   alt={userSuggestion.displayName}
                 />
                 <StyledLink to={`/profile/${userSuggestion.id}`}>
                   {userSuggestion.displayName}
                 </StyledLink>
                 <FollowButton
-                  onClick={() => handleFollowToggle(userSuggestion.id, userSuggestion.isFollowing)}
+                  onClick={() =>
+                    handleFollowToggle(
+                      userSuggestion.id,
+                      userSuggestion.isFollowing
+                    )
+                  }
                 >
                   {userSuggestion.isFollowing ? "Following" : "Follow"}
                 </FollowButton>

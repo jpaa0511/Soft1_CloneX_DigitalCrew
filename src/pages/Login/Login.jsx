@@ -70,7 +70,6 @@ const Login = () => {
         </MainContent>
         {isOpenModalLogin && (
           <LoginModal>
-            
             <LoginForm
               email={email}
               password={password}

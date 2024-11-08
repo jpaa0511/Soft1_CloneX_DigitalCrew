@@ -189,9 +189,7 @@ function Follower() {
                     <FollowerAvatar src={followerUser.photoURL} alt="Avatar" />
                     <FollowerInfo>
                       <FollowerName
-                        onClick={() =>
-                          navigate(`/profile/${followerUser.uid}`)
-                        }
+                        onClick={() => navigate(`/profile/${followerUser.uid}`)}
                       >
                         {followerUser.displayName}
                       </FollowerName>

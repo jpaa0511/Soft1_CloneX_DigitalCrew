@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, LoginButton, CloseIconContainer, } from "./LoginStyle";
+import { Form, Input, LoginButton, CloseIconContainer } from "./LoginStyle";
 import CloseIcon from "@mui/icons-material/Close";
 
 const LoginForm = ({
@@ -12,7 +12,7 @@ const LoginForm = ({
 }) => (
   <form onSubmit={onLogin}>
     <Form>
-    <CloseIconContainer onClick={toggleModalLogin}>
+      <CloseIconContainer onClick={toggleModalLogin}>
         <CloseIcon />
       </CloseIconContainer>
       <Input>

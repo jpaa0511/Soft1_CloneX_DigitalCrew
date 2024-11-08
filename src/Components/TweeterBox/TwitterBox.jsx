@@ -46,10 +46,10 @@ export const TwitterBoxs = () => {
             setUserName(userData.userName);
             setAvatar(userData.photoURL);
           } else {
-            console.log("Perfil de usuario no encontrado");
+            console.log("User profile not found");
           }
         } catch (error) {
-          console.error("Error al obtener los datos del perfil:", error);
+          console.error("Error fetching profile data:", error);
         }
       };
 
@@ -61,12 +61,12 @@ export const TwitterBoxs = () => {
     e.preventDefault();
 
     if (tweeMsg.length < 5 || tweeMsg.length > 280) {
-      alert("El tweet debe tener entre 5 y 280 caracteres.");
+      alert("Tweet must be between 5 and 280 characters.");
       return;
     }
     if (!userName || !avatar) {
       alert(
-        "Debe actualizar su perfil para incluir un nombre de usuario y avatar antes de publicar."
+        "You need to update your profile to include a username and avatar before posting."
       );
       return;
     }
@@ -87,7 +87,7 @@ export const TwitterBoxs = () => {
 
       setTimeout(() => setTweetSuccess(false), 3000);
     } catch (error) {
-      console.error("Error al enviar el tweet:", error);
+      console.error("Error sending tweet:", error);
     }
   };
 
@@ -98,9 +98,9 @@ export const TwitterBoxs = () => {
       try {
         const downloadURL = await uploadFile(file, "post");
         setPost(downloadURL);
-        console.log("URL del post:", downloadURL);
+        console.log("Post URL:", downloadURL);
       } catch (error) {
-        console.error("Error al subir el post:", error);
+        console.error("Error uploading post:", error);
       } finally {
         setIsLoading(false);
       }
