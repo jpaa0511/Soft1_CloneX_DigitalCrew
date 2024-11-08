@@ -35,7 +35,6 @@ const XProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       if (!userId) {
-        // Si no hay userId, usa los datos del contexto
         setUserData({
           displayName: user.displayName,
           photoURL: user.photoURL || User,
@@ -46,7 +45,6 @@ const XProfile = () => {
           joinDate: user.joinDate || "N/A",
         });
       } else {
-        // Si hay un userId, intenta cargar los datos desde Firestore
         try {
           const userDoc = doc(db, "perfil", userId);
           const userSnapshot = await getDoc(userDoc);
