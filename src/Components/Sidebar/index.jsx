@@ -65,7 +65,7 @@ export const Sidebar = () => {
     }
   }, [user]);
 
-  const profilePath = profileExists ? `/profile/${user?.uid}` : "/profile";
+  const profilePath = `/profile/${user?.uid}`;
 
   return (
     <Container>

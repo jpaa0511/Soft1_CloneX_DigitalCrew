@@ -44,25 +44,24 @@ export const useAuth = (dispatch) => {
       password,
       displayName
     );
-
+  
     if (!ok) {
       dispatch({ type: userTypes.error, payload: { errorMessage } });
-      return false;
+      return { success: false, errorMessage };
     }
-
+  
     const payload = { uid, email, photoURL, displayName };
-
     const action = {
       type: userTypes.logIn,
       payload,
     };
-
+  
     localStorage.setItem("user", JSON.stringify(payload));
-
     dispatch(action);
-
-    return true;
+  
+    return { success: true, uid };
   };
+  
 
   const logInWithGoogle = async () => {
     const { ok, uid, displayName, email, photoURL, errorMessage } =

@@ -35,9 +35,10 @@ const XProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       if (!userId) {
+        // Si no hay userId, usa los datos del contexto
         setUserData({
           displayName: user.displayName,
-          photoURL: user.photoURL,
+          photoURL: user.photoURL || User,
           userName: user.userName || "Usuario",
           following: user.following || 0,
           followers: user.followers || 0,
@@ -45,6 +46,7 @@ const XProfile = () => {
           joinDate: user.joinDate || "N/A",
         });
       } else {
+        // Si hay un userId, intenta cargar los datos desde Firestore
         try {
           const userDoc = doc(db, "perfil", userId);
           const userSnapshot = await getDoc(userDoc);
@@ -52,18 +54,26 @@ const XProfile = () => {
           if (userSnapshot.exists()) {
             const userData = userSnapshot.data();
             setUserData({
-              displayName: userData.displayName,
-              photoURL: userData.photoURL || User,
-              userName: userData.userName,
-              following: userData.following || 0,
-              followers: userData.followers || 0,
-              bannerURL:
-                userData.bannerURL || "https://example.com/default-cover.jpg",
-              joinDate: userData.joinDate || "N/A",
+              displayName: userData.displayName || user.displayName,
+              photoURL: userData.photoURL || user.photoURL || User,
+              userName: userData.userName || user.userName || "Usuario",
+              following: userData.following || user.following || 0,
+              followers: userData.followers || user.followers || 0,
+              bannerURL: userData.bannerURL || "https://example.com/default-cover.jpg",
+              joinDate: userData.joinDate || user.joinDate || "N/A",
             });
             setIsFollowing(userData.followers?.includes(user.uid) || false);
           } else {
-            console.error("User does not exist");
+            console.error("User does not exist in Firestore. Loading from context.");
+            setUserData({
+              displayName: user.displayName,
+              photoURL: user.photoURL || User,
+              userName: user.userName || "Usuario",
+              following: user.following || 0,
+              followers: user.followers || 0,
+              bannerURL: user.bannerURL || "https://example.com/default-cover.jpg",
+              joinDate: user.joinDate || "N/A",
+            });
           }
         } catch (error) {
           console.error("Error fetching user data:", error);
@@ -211,7 +221,7 @@ const XProfile = () => {
                 Likes
               </a>
             </li>
-          </TabsContainer>
+          </TabsContainer>  
           <Tweet userId={userId} loggedInUserId={user.uid} showAll={false} />
         </Container>
         <WidgetsContainer>

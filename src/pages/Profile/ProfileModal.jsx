@@ -97,18 +97,26 @@ export const ProfileModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await setDoc(doc(db, "perfil", user.uid), {
-        displayName: formData.name,
-        userName: formData.userName,
-        bio: formData.bio,
-        photoURL: formData.profilePhoto,
-        bannerURL: formData.bannerPhoto,
-        followers: [], 
-        following: [], 
-      }, { merge: true }); 
+      // Crear o actualizar el perfil en Firestore
+      await setDoc(
+        doc(db, "perfil", user.uid),
+        {
+          displayName: formData.name,
+          userName: formData.userName,
+          bio: formData.bio,
+          photoURL: formData.profilePhoto,
+          bannerURL: formData.bannerPhoto,
+          followers: [], 
+          following: [], 
+        },
+        { merge: true }
+      );
 
-      onProfileUpdated(formData);
+      if (onProfileUpdated) {
+        onProfileUpdated(formData); // Llama si está definida
+      }
       onClose();
+      window.location.reload();
     } catch (error) {
       console.error("Error al guardar el perfil:", error);
     }

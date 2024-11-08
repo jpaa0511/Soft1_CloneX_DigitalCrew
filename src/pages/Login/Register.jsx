@@ -45,7 +45,7 @@ const RegisterForm = ({
         />
       </InputRegister>
       <InputRegister>
-        <label htmlFor="email">UserName</label>
+        <label htmlFor="userName">UserName</label>
         <input
           type="text"
           name="userName"

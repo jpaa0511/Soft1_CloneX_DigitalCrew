@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
+
 
 export const ExploreContainer = styled.main`
   display: flex;
@@ -101,5 +103,17 @@ export const FollowButton = styled.button`
 
   &:hover {
     background-color: #1991da;
+  }
+`;
+
+export const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+
+  &:hover {
+    color: #1da1f2;
   }
 `;

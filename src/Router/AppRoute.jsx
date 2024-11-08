@@ -35,15 +35,6 @@ const AppRouter = () => {
       <Route path="*" element={<Login />} />
 
       <Route
-        path="/profile"
-        element={
-          <PrivateRoute>
-            <Xprofile />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
         path="/profile/:userId"
         element={
           <PrivateRoute>
